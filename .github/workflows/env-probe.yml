@@ -1,0 +1,13 @@
+# a1792 probe, scratch repo only: does the `pypi` environment hand its secret
+# to a run from main, and refuse a run from any other branch? Delete after.
+name: env-probe
+on:
+  push: { branches: [main, spike/a1792-env-probe], paths: [.github/workflows/env-probe.yml] }
+permissions: {}
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - env: { PROBE: "${{ secrets.A1792_ENV_PROBE }}" }
+        run: if [ -n "$PROBE" ]; then echo "A1792_ENV_PROBE present on $GITHUB_REF"; else echo "::error::A1792_ENV_PROBE absent on $GITHUB_REF"; exit 1; fi
